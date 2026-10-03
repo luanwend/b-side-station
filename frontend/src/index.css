@@ -1,0 +1,902 @@
+/* B-Side Station — dark theme inspired by Letterboxd */
+
+:root {
+  --bg: #14181c;
+  --surface: #1c2228;
+  --surface-2: #2c3440;
+  --border: #2c3440;
+  --text: #9ab;
+  --text-strong: #fff;
+  --muted: #678;
+  --accent: #00e054;
+  --accent-dark: #00b043;
+  --orange: #ff8000;
+  --blue: #40bcf4;
+  --danger: #ff6b6b;
+  --star: #00e054;
+  --star-empty: #3d4855;
+  --radius: 6px;
+  font-family: 'Segoe UI', system-ui, -apple-system, Roboto, Helvetica, Arial, sans-serif;
+  color: var(--text);
+  background: var(--bg);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  line-height: 1.5;
+}
+
+a {
+  color: var(--text-strong);
+  text-decoration: none;
+}
+
+a:hover {
+  color: var(--blue);
+}
+
+h1,
+h2,
+h3 {
+  color: var(--text-strong);
+  margin: 0;
+  line-height: 1.2;
+}
+
+img {
+  display: block;
+  max-width: 100%;
+}
+
+input,
+textarea {
+  width: 100%;
+  padding: 10px 12px;
+  background: var(--surface-2);
+  color: var(--text-strong);
+  border: 1px solid transparent;
+  border-radius: var(--radius);
+  font: inherit;
+}
+
+input:focus,
+textarea:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+textarea {
+  resize: vertical;
+}
+
+.container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 16px;
+}
+
+main.container {
+  padding-top: 32px;
+  padding-bottom: 64px;
+}
+
+.muted {
+  color: var(--muted);
+}
+
+.small {
+  font-size: 0.85rem;
+}
+
+.error {
+  color: var(--danger);
+}
+
+.status {
+  text-align: center;
+  color: var(--muted);
+  padding: 48px 0;
+}
+
+.notice {
+  background: var(--surface);
+  border-left: 3px solid var(--accent);
+  padding: 12px 16px;
+  border-radius: var(--radius);
+}
+
+.notice a {
+  color: var(--accent);
+}
+
+/* ---------- Buttons ---------- */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  border: none;
+  border-radius: var(--radius);
+  background: var(--surface-2);
+  color: var(--text-strong);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.btn:hover:not(:disabled) {
+  filter: brightness(1.15);
+  color: var(--text-strong);
+}
+
+.btn:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.btn-primary {
+  background: var(--accent-dark);
+}
+
+.btn-ghost {
+  background: transparent;
+  color: var(--text);
+}
+
+.btn-small {
+  padding: 5px 12px;
+  font-size: 0.85rem;
+}
+
+.btn-liked {
+  background: var(--orange);
+}
+
+.btn-active {
+  background: var(--blue);
+  color: var(--bg);
+}
+
+.link-button {
+  background: none;
+  border: none;
+  padding: 0;
+  color: var(--muted);
+  font: inherit;
+  cursor: pointer;
+}
+
+.link-button:hover {
+  color: var(--text-strong);
+}
+
+.link-button.liked {
+  color: var(--orange);
+}
+
+/* ---------- Navbar ---------- */
+
+.navbar {
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+}
+
+.navbar-inner {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  min-height: 64px;
+  flex-wrap: wrap;
+}
+
+.logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: var(--text-strong);
+  letter-spacing: -0.5px;
+  white-space: nowrap;
+}
+
+.logo-dot {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--accent) 35%, var(--orange) 36%, var(--orange) 60%, var(--blue) 61%);
+}
+
+.nav-links {
+  display: flex;
+  gap: 16px;
+}
+
+.nav-links a {
+  color: var(--text);
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 0.85rem;
+  letter-spacing: 1px;
+}
+
+.nav-links a.active,
+.nav-links a:hover {
+  color: var(--text-strong);
+}
+
+.nav-search {
+  flex: 1;
+  min-width: 180px;
+}
+
+.nav-search input {
+  border-radius: 20px;
+  padding: 6px 14px;
+}
+
+/* ---------- Auth pages ---------- */
+
+.auth-page {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 16px;
+}
+
+.auth-card {
+  width: 100%;
+  max-width: 380px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  background: var(--surface);
+  padding: 32px;
+  border-radius: 10px;
+}
+
+.auth-card label {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 0.9rem;
+}
+
+.auth-card a {
+  color: var(--accent);
+}
+
+/* ---------- Sections ---------- */
+
+.hero {
+  margin-bottom: 24px;
+}
+
+.hero h1,
+.page-title {
+  font-size: 1.8rem;
+  margin-bottom: 8px;
+}
+
+.section {
+  margin: 32px 0;
+}
+
+.section-title {
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: var(--text);
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 6px;
+  margin-bottom: 16px;
+}
+
+.panel {
+  background: var(--surface);
+  border-radius: 8px;
+  padding: 16px;
+  margin-bottom: 16px;
+}
+
+.panel h2 {
+  font-size: 1rem;
+  margin-bottom: 12px;
+}
+
+.panel-footer {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 10px;
+}
+
+/* ---------- Album cards ---------- */
+
+.album-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 20px;
+}
+
+.album-row {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 150px;
+  gap: 16px;
+  overflow-x: auto;
+  padding-bottom: 8px;
+}
+
+.album-card {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.album-card img {
+  width: 100%;
+  aspect-ratio: 1;
+  object-fit: cover;
+  border-radius: 4px;
+  border: 1px solid var(--border);
+  transition: border-color 0.15s;
+}
+
+.album-card:hover img {
+  border-color: var(--accent);
+}
+
+.album-card-title {
+  color: var(--text-strong);
+  font-size: 0.9rem;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.album-card-artist {
+  color: var(--muted);
+  font-size: 0.8rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ---------- Artists ---------- */
+
+.artist-row {
+  display: flex;
+  gap: 20px;
+  overflow-x: auto;
+  padding-bottom: 8px;
+}
+
+.artist-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  width: 110px;
+  flex-shrink: 0;
+  text-align: center;
+  font-size: 0.85rem;
+}
+
+.artist-card img {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1px solid var(--border);
+}
+
+.artist-header {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+
+.artist-header img {
+  width: 160px;
+  height: 160px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.artist-header h1 {
+  font-size: 2.2rem;
+}
+
+/* ---------- Stars ---------- */
+
+.stars {
+  display: inline-flex;
+  line-height: 1;
+}
+
+.star {
+  position: relative;
+  color: var(--star-empty);
+  font-size: 1.1rem;
+}
+
+.stars-sm .star {
+  font-size: 0.95rem;
+}
+
+.stars-lg .star {
+  font-size: 2rem;
+}
+
+.star.full {
+  color: var(--star);
+}
+
+.star.half {
+  background: linear-gradient(90deg, var(--star) 50%, var(--star-empty) 50%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.star-half {
+  position: absolute;
+  top: 0;
+  width: 50%;
+  height: 100%;
+  padding: 0;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+}
+
+.star-half.left {
+  left: 0;
+}
+
+.star-half.right {
+  right: 0;
+}
+
+/* ---------- Album page ---------- */
+
+.album-hero {
+  display: grid;
+  grid-template-columns: 300px 1fr;
+  gap: 32px;
+  align-items: start;
+}
+
+.album-cover {
+  width: 100%;
+  border-radius: 6px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
+}
+
+.album-info h1 {
+  font-size: 2.2rem;
+}
+
+.album-artist {
+  font-size: 1.1rem;
+  margin: 6px 0 16px;
+}
+
+.album-artist a {
+  border-bottom: 1px dotted var(--muted);
+}
+
+.album-stats {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 20px;
+  margin-bottom: 16px;
+}
+
+.album-average {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.album-average strong {
+  color: var(--text-strong);
+  font-size: 1.2rem;
+}
+
+.album-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+}
+
+.your-rating {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+}
+
+.your-rating h3 {
+  font-size: 0.95rem;
+}
+
+.album-columns {
+  display: grid;
+  grid-template-columns: 1fr 300px;
+  gap: 32px;
+  margin-top: 40px;
+}
+
+.tracklist {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  font-size: 0.9rem;
+}
+
+.tracklist li {
+  display: grid;
+  grid-template-columns: 28px 1fr auto;
+  gap: 8px;
+  padding: 6px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.track-title {
+  color: var(--text-strong);
+}
+
+/* ---------- Reviews ---------- */
+
+.review-card {
+  display: flex;
+  gap: 16px;
+  padding: 16px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.review-cover {
+  flex-shrink: 0;
+}
+
+.review-cover img {
+  width: 70px;
+  height: 70px;
+  object-fit: cover;
+  border-radius: 4px;
+}
+
+.review-main {
+  flex: 1;
+  min-width: 0;
+}
+
+.review-album-title {
+  font-size: 1.05rem;
+  margin-bottom: 6px;
+}
+
+.review-album-title .muted {
+  font-size: 0.85rem;
+  font-weight: 400;
+}
+
+.review-header {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  font-size: 0.9rem;
+}
+
+.username {
+  font-weight: 700;
+}
+
+.review-body {
+  color: var(--text);
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  margin: 10px 0;
+}
+
+.review-actions {
+  display: flex;
+  gap: 20px;
+  font-size: 0.85rem;
+}
+
+.replies {
+  margin-top: 12px;
+  padding-left: 16px;
+  border-left: 2px solid var(--border);
+}
+
+.reply {
+  font-size: 0.9rem;
+  margin-bottom: 10px;
+}
+
+.reply p {
+  margin: 4px 0 0;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.reply .link-button {
+  margin-left: 8px;
+}
+
+.reply-form {
+  display: flex;
+  gap: 8px;
+}
+
+/* ---------- Avatars ---------- */
+
+.avatar {
+  display: inline-grid;
+  place-items: center;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--accent-dark), var(--blue));
+  color: var(--bg);
+  font-weight: 800;
+}
+
+.avatar-sm {
+  width: 26px;
+  height: 26px;
+  font-size: 0.8rem;
+}
+
+.avatar-lg {
+  width: 96px;
+  height: 96px;
+  font-size: 2.5rem;
+}
+
+/* ---------- Profile ---------- */
+
+.profile-header {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+
+.profile-info {
+  flex: 1;
+  min-width: 200px;
+}
+
+.profile-info h1 {
+  font-size: 1.8rem;
+  margin-bottom: 6px;
+}
+
+.profile-info p {
+  margin: 0 0 10px;
+}
+
+.profile-stats {
+  display: flex;
+  gap: 24px;
+}
+
+.profile-stats div {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.profile-stats strong {
+  color: var(--text-strong);
+  font-size: 1.5rem;
+}
+
+.profile-stats span {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.profile-columns {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 32px;
+}
+
+.tabs {
+  display: flex;
+  gap: 4px;
+  border-bottom: 1px solid var(--border);
+  margin: 24px 0 8px;
+}
+
+.tabs button {
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  padding: 8px 16px;
+  color: var(--muted);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.tabs button.active {
+  color: var(--text-strong);
+  border-bottom-color: var(--accent);
+}
+
+/* ---------- Chips ---------- */
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.chip {
+  padding: 5px 14px;
+  border-radius: 20px;
+  background: var(--surface-2);
+  color: var(--text-strong);
+  border: 1px solid transparent;
+  font: inherit;
+  font-size: 0.85rem;
+}
+
+button.chip {
+  cursor: pointer;
+}
+
+button.chip:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.chip.selected {
+  background: var(--accent-dark);
+}
+
+/* ---------- Settings / picker ---------- */
+
+.settings {
+  max-width: 720px;
+}
+
+.settings-actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.picker-selected {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.picker-chip {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--surface-2);
+  border-radius: var(--radius);
+  padding: 4px 6px 4px 4px;
+  max-width: 100%;
+  font-size: 0.85rem;
+  color: var(--text-strong);
+}
+
+.picker-chip span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.picker-chip img,
+.picker-results img {
+  width: 36px;
+  height: 36px;
+  object-fit: cover;
+  border-radius: 3px;
+  flex-shrink: 0;
+}
+
+.picker-chip img.round,
+.picker-results img.round {
+  border-radius: 50%;
+}
+
+.picker-chip button {
+  background: none;
+  border: none;
+  color: var(--muted);
+  font-size: 1.2rem;
+  cursor: pointer;
+}
+
+.picker-chip button:hover {
+  color: var(--danger);
+}
+
+.picker-search {
+  display: flex;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.picker-results {
+  list-style: none;
+  margin: 12px 0 0;
+  padding: 0;
+  max-height: 320px;
+  overflow-y: auto;
+}
+
+.picker-results li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 0;
+  border-bottom: 1px solid var(--border);
+  font-size: 0.9rem;
+}
+
+.picker-results li span {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ---------- Small screens ---------- */
+
+@media (max-width: 760px) {
+  .album-hero,
+  .album-columns,
+  .profile-columns {
+    grid-template-columns: 1fr;
+  }
+
+  .album-hero .album-cover {
+    max-width: 260px;
+  }
+
+  .album-grid {
+    grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+    gap: 14px;
+  }
+
+  .album-row {
+    grid-auto-columns: 120px;
+  }
+
+  .navbar-inner {
+    gap: 12px;
+    padding: 10px 16px;
+  }
+
+  .nav-search {
+    order: 5;
+    flex-basis: 100%;
+  }
+}
