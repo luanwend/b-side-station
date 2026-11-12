@@ -1,65 +1,72 @@
-import { useState } from 'react'
-import { Link } from 'react-router-dom'
-import { api } from '../api.js'
-import { useAuth } from '../context/AuthContext.jsx'
-import { COVER_PLACEHOLDER, formatDate, plural, yearOf } from '../utils.js'
-import StarRating from './StarRating.jsx'
+import { useState } from "react";
+import { Link } from "react-router-dom";
+import { api } from "../api.js";
+import { useAuth } from "../context/AuthContext.jsx";
+import { formatDate, plural, yearOf } from "../utils.js";
+import StarRating from "./StarRating.jsx";
 
-export default function ReviewCard({ review: initialReview, showAlbum = false }) {
-  const { user } = useAuth()
-  const [review, setReview] = useState(initialReview)
-  const [replies, setReplies] = useState(null)
-  const [showReplies, setShowReplies] = useState(false)
-  const [replyText, setReplyText] = useState('')
-  const [error, setError] = useState('')
-  const album = review.album
+export default function ReviewCard({
+  review: initialReview,
+  showAlbum = false,
+}) {
+  const { user } = useAuth();
+  const [review, setReview] = useState(initialReview);
+  const [replies, setReplies] = useState(null);
+  const [showReplies, setShowReplies] = useState(false);
+  const [replyText, setReplyText] = useState("");
+  const [error, setError] = useState("");
+  const album = review.album;
 
   async function toggleLike() {
-    setError('')
+    setError("");
     try {
-      const path = `/reviews/${review.id}/like`
-      setReview(review.liked_by_me ? await api.del(path) : await api.post(path))
+      const path = `/reviews/${review.id}/like`;
+      setReview(
+        review.liked_by_me ? await api.del(path) : await api.post(path),
+      );
     } catch (err) {
-      setError(err.message)
+      setError(err.message);
     }
   }
 
   async function toggleReplies() {
-    setError('')
+    setError("");
     if (!showReplies && replies === null) {
       try {
-        const data = await api.get(`/reviews/${review.id}/replies`)
-        setReplies(data.replies)
+        const data = await api.get(`/reviews/${review.id}/replies`);
+        setReplies(data.replies);
       } catch (err) {
-        setError(err.message)
-        return
+        setError(err.message);
+        return;
       }
     }
-    setShowReplies(!showReplies)
+    setShowReplies(!showReplies);
   }
 
   async function sendReply(event) {
-    event.preventDefault()
-    if (!replyText.trim()) return
-    setError('')
+    event.preventDefault();
+    if (!replyText.trim()) return;
+    setError("");
     try {
-      const reply = await api.post(`/reviews/${review.id}/replies`, { body: replyText })
-      setReplies([...replies, reply])
-      setReview({ ...review, reply_count: review.reply_count + 1 })
-      setReplyText('')
+      const reply = await api.post(`/reviews/${review.id}/replies`, {
+        body: replyText,
+      });
+      setReplies([...replies, reply]);
+      setReview({ ...review, reply_count: review.reply_count + 1 });
+      setReplyText("");
     } catch (err) {
-      setError(err.message)
+      setError(err.message);
     }
   }
 
   async function deleteReply(replyId) {
-    setError('')
+    setError("");
     try {
-      await api.del(`/replies/${replyId}`)
-      setReplies(replies.filter((reply) => reply.id !== replyId))
-      setReview({ ...review, reply_count: review.reply_count - 1 })
+      await api.del(`/replies/${replyId}`);
+      setReplies(replies.filter((reply) => reply.id !== replyId));
+      setReview({ ...review, reply_count: review.reply_count - 1 });
     } catch (err) {
-      setError(err.message)
+      setError(err.message);
     }
   }
 
@@ -67,13 +74,20 @@ export default function ReviewCard({ review: initialReview, showAlbum = false })
     <article className="review-card">
       {showAlbum && album && (
         <Link to={`/albums/${album.id}`} className="review-cover">
-          <img src={album.cover || COVER_PLACEHOLDER} alt={album.title} loading="lazy" />
+          <img
+            src={
+              album.cover ||
+              "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%232c3440'/%3E%3Ccircle cx='50' cy='50' r='30' fill='%2314181c'/%3E%3Ccircle cx='50' cy='50' r='6' fill='%23678'/%3E%3C/svg%3E"
+            }
+            alt={album.title}
+            loading="lazy"
+          />
         </Link>
       )}
       <div className="review-main">
         {showAlbum && album && (
           <h3 className="review-album-title">
-            <Link to={`/albums/${album.id}`}>{album.title}</Link>{' '}
+            <Link to={`/albums/${album.id}`}>{album.title}</Link>{" "}
             <span className="muted">
               {album.artist?.name}
               {album.release_date && ` · ${yearOf(album.release_date)}`}
@@ -81,16 +95,21 @@ export default function ReviewCard({ review: initialReview, showAlbum = false })
           </h3>
         )}
         <div className="review-header">
-          <Link to={`/users/${review.user.username}`} className="avatar avatar-sm">
+          <Link
+            to={`/users/${review.user.username}`}
+            className="avatar avatar-sm"
+          >
             {review.user.username[0].toUpperCase()}
           </Link>
           <span className="muted">
-            {review.body ? 'Review by' : 'Rated by'}{' '}
+            {review.body ? "Review by" : "Rated by"}{" "}
             <Link to={`/users/${review.user.username}`} className="username">
               {review.user.username}
             </Link>
           </span>
-          {review.rating != null && <StarRating value={review.rating} size="sm" />}
+          {review.rating != null && (
+            <StarRating value={review.rating} size="sm" />
+          )}
           <span className="muted small">{formatDate(review.created_at)}</span>
         </div>
 
@@ -100,13 +119,19 @@ export default function ReviewCard({ review: initialReview, showAlbum = false })
           <div className="review-actions">
             <button
               type="button"
-              className={`link-button${review.liked_by_me ? ' liked' : ''}`}
+              className={`link-button${review.liked_by_me ? " liked" : ""}`}
               onClick={toggleLike}
             >
-              ♥ {plural(review.like_count, 'like')}
+              ♥ {plural(review.like_count, "like")}
             </button>
-            <button type="button" className="link-button" onClick={toggleReplies}>
-              {showReplies ? 'Hide replies' : plural(review.reply_count, 'reply', 'replies')}
+            <button
+              type="button"
+              className="link-button"
+              onClick={toggleReplies}
+            >
+              {showReplies
+                ? "Hide replies"
+                : plural(review.reply_count, "reply", "replies")}
             </button>
           </div>
         )}
@@ -120,9 +145,16 @@ export default function ReviewCard({ review: initialReview, showAlbum = false })
                 <Link to={`/users/${reply.user.username}`} className="username">
                   {reply.user.username}
                 </Link>
-                <span className="muted small"> · {formatDate(reply.created_at)}</span>
+                <span className="muted small">
+                  {" "}
+                  · {formatDate(reply.created_at)}
+                </span>
                 {reply.user.id === user.id && (
-                  <button type="button" className="link-button small" onClick={() => deleteReply(reply.id)}>
+                  <button
+                    type="button"
+                    className="link-button small"
+                    onClick={() => deleteReply(reply.id)}
+                  >
                     Delete
                   </button>
                 )}
@@ -136,7 +168,11 @@ export default function ReviewCard({ review: initialReview, showAlbum = false })
                 maxLength={2000}
                 onChange={(event) => setReplyText(event.target.value)}
               />
-              <button type="submit" className="btn btn-small" disabled={!replyText.trim()}>
+              <button
+                type="submit"
+                className="btn btn-small"
+                disabled={!replyText.trim()}
+              >
                 Reply
               </button>
             </form>
@@ -144,5 +180,5 @@ export default function ReviewCard({ review: initialReview, showAlbum = false })
         )}
       </div>
     </article>
-  )
+  );
 }

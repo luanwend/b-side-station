@@ -9,9 +9,6 @@ from ..utils import current_user_id, parse_id_list, require_login
 bp = Blueprint("users", __name__, url_prefix="/api")
 require_login(bp)
 
-MAX_FAVORITES = 5
-
-
 def profile_dict(user):
     favorite_albums = FavoriteAlbum.query.filter_by(user_id=user.id).order_by(FavoriteAlbum.position)
     favorite_artists = FavoriteArtist.query.filter_by(user_id=user.id).order_by(FavoriteArtist.position)
@@ -31,10 +28,8 @@ def profile_dict(user):
         },
     }
 
-
 def find_user(username):
     return User.query.filter_by(username=username).first()
-
 
 @bp.get("/users/<username>")
 def profile(username):
@@ -42,7 +37,6 @@ def profile(username):
     if not user:
         return {"error": "User not found."}, 404
     return profile_dict(user)
-
 
 @bp.get("/users/<username>/reviews")
 def user_reviews(username):
@@ -53,7 +47,6 @@ def user_reviews(username):
     viewer_id = current_user_id()
     return {"reviews": [review.to_dict(viewer_id, include_album=True) for review in items]}
 
-
 @bp.get("/users/<username>/likes")
 def user_likes(username):
     user = find_user(username)
@@ -61,7 +54,6 @@ def user_likes(username):
         return {"error": "User not found."}, 404
     items = AlbumLike.query.filter_by(user_id=user.id).order_by(AlbumLike.created_at.desc())
     return {"albums": [item.album.to_dict() for item in items]}
-
 
 @bp.get("/users/<username>/shelf")
 def user_shelf(username):
@@ -71,7 +63,6 @@ def user_shelf(username):
     items = ShelfItem.query.filter_by(user_id=user.id).order_by(ShelfItem.created_at.desc())
     return {"albums": [item.album.to_dict() for item in items]}
 
-
 @bp.put("/me/profile")
 def update_profile():
     """Update the bio and replace the favorite albums, artists and genres (max 5 each)."""
@@ -79,9 +70,9 @@ def update_profile():
     data = request.get_json(silent=True) or {}
 
     try:
-        album_ids = parse_id_list(data.get("favorite_album_ids"), MAX_FAVORITES, "albums")
-        artist_ids = parse_id_list(data.get("favorite_artist_ids"), MAX_FAVORITES, "artists")
-        genre_ids = parse_id_list(data.get("favorite_genre_ids"), MAX_FAVORITES, "genres")
+        album_ids = parse_id_list(data.get("favorite_album_ids"), 5, "albums")
+        artist_ids = parse_id_list(data.get("favorite_artist_ids"), 5, "artists")
+        genre_ids = parse_id_list(data.get("favorite_genre_ids"), 5, "genres")
     except ValueError as exc:
         return {"error": str(exc)}, 400
 

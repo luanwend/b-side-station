@@ -1,58 +1,62 @@
-import { useEffect, useState } from 'react'
-import { Link, useParams } from 'react-router-dom'
-import { api } from '../api.js'
-import AlbumGrid from '../components/AlbumGrid.jsx'
-import ReviewCard from '../components/ReviewCard.jsx'
-import { ARTIST_PLACEHOLDER } from '../utils.js'
+import { useEffect, useState } from "react";
+import { Link, useParams } from "react-router-dom";
+import { api } from "../api.js";
+import AlbumGrid from "../components/AlbumGrid.jsx";
+import ReviewCard from "../components/ReviewCard.jsx";
 
 const TABS = [
-  { key: 'reviews', label: 'Reviews' },
-  { key: 'likes', label: 'Likes' },
-  { key: 'shelf', label: 'Shelf' },
-]
+  { key: "reviews", label: "Reviews" },
+  { key: "likes", label: "Likes" },
+  { key: "shelf", label: "Shelf" },
+];
 
 export default function Profile() {
-  const { username } = useParams()
-  const [profile, setProfile] = useState(null)
-  const [error, setError] = useState('')
-  const [tab, setTab] = useState('reviews')
-  const [tabData, setTabData] = useState(null)
+  const { username } = useParams();
+  const [profile, setProfile] = useState(null);
+  const [error, setError] = useState("");
+  const [tab, setTab] = useState("reviews");
+  const [tabData, setTabData] = useState(null);
 
   useEffect(() => {
-    let cancelled = false
-    setProfile(null)
-    setError('')
-    setTab('reviews')
+    let cancelled = false;
+    setProfile(null);
+    setError("");
+    setTab("reviews");
     api
       .get(`/users/${username}`)
       .then((data) => !cancelled && setProfile(data))
-      .catch((err) => !cancelled && setError(err.message))
+      .catch((err) => !cancelled && setError(err.message));
     return () => {
-      cancelled = true
-    }
-  }, [username])
+      cancelled = true;
+    };
+  }, [username]);
 
   useEffect(() => {
-    let cancelled = false
-    setTabData(null)
+    let cancelled = false;
+    setTabData(null);
     api
       .get(`/users/${username}/${tab}`)
-      .then((data) => !cancelled && setTabData({ tab, items: data.reviews || data.albums }))
-      .catch((err) => !cancelled && setError(err.message))
+      .then(
+        (data) =>
+          !cancelled && setTabData({ tab, items: data.reviews || data.albums }),
+      )
+      .catch((err) => !cancelled && setError(err.message));
     return () => {
-      cancelled = true
-    }
-  }, [username, tab])
+      cancelled = true;
+    };
+  }, [username, tab]);
 
-  if (error) return <p className="error">{error}</p>
-  if (!profile) return <p className="status">Loading...</p>
+  if (error) return <p className="error">{error}</p>;
+  if (!profile) return <p className="status">Loading...</p>;
 
-  const { favorites, stats } = profile
+  const { favorites, stats } = profile;
 
   return (
     <>
       <section className="profile-header">
-        <div className="avatar avatar-lg">{profile.username[0].toUpperCase()}</div>
+        <div className="avatar avatar-lg">
+          {profile.username[0].toUpperCase()}
+        </div>
         <div className="profile-info">
           <h1>{profile.username}</h1>
           {profile.bio && <p>{profile.bio}</p>}
@@ -89,8 +93,19 @@ export default function Profile() {
           {favorites.artists.length ? (
             <div className="artist-row">
               {favorites.artists.map((artist) => (
-                <Link key={artist.id} to={`/artists/${artist.id}`} className="artist-card">
-                  <img src={artist.picture || ARTIST_PLACEHOLDER} alt={artist.name} loading="lazy" />
+                <Link
+                  key={artist.id}
+                  to={`/artists/${artist.id}`}
+                  className="artist-card"
+                >
+                  <img
+                    src={
+                      artist.picture ||
+                      "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%232c3440'/%3E%3Ccircle cx='50' cy='38' r='18' fill='%23678'/%3E%3Cellipse cx='50' cy='90' rx='32' ry='26' fill='%23678'/%3E%3C/svg%3E"
+                    }
+                    alt={artist.name}
+                    loading="lazy"
+                  />
                   <span>{artist.name}</span>
                 </Link>
               ))}
@@ -120,7 +135,7 @@ export default function Profile() {
           <button
             key={item.key}
             type="button"
-            className={tab === item.key ? 'active' : ''}
+            className={tab === item.key ? "active" : ""}
             onClick={() => setTab(item.key)}
           >
             {item.label}
@@ -130,15 +145,22 @@ export default function Profile() {
 
       {tabData?.tab !== tab ? (
         <p className="status">Loading...</p>
-      ) : tab === 'reviews' ? (
+      ) : tab === "reviews" ? (
         tabData.items.length ? (
-          tabData.items.map((review) => <ReviewCard key={review.id} review={review} showAlbum />)
+          tabData.items.map((review) => (
+            <ReviewCard key={review.id} review={review} showAlbum />
+          ))
         ) : (
           <p className="muted">No reviews yet.</p>
         )
       ) : (
-        <AlbumGrid albums={tabData.items} empty={tab === 'likes' ? 'No liked albums yet.' : 'The shelf is empty.'} />
+        <AlbumGrid
+          albums={tabData.items}
+          empty={
+            tab === "likes" ? "No liked albums yet." : "The shelf is empty."
+          }
+        />
       )}
     </>
-  )
+  );
 }

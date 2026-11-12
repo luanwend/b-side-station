@@ -1,6 +1,5 @@
 from flask import Blueprint, request
 from sqlalchemy import func
-
 from .. import deezer
 from ..extensions import db
 from ..models import AlbumLike, Review, ShelfItem
@@ -10,14 +9,12 @@ from ..utils import current_user_id, require_login
 bp = Blueprint("albums", __name__, url_prefix="/api/albums")
 require_login(bp)
 
-
 @bp.get("/search")
 def search():
     query = request.args.get("q", "").strip()
     if not query:
         return {"albums": []}
     return {"albums": deezer.search_albums(query)}
-
 
 @bp.get("/<int:album_id>")
 def detail(album_id):
@@ -45,7 +42,6 @@ def detail(album_id):
     }
     return album
 
-
 @bp.get("/<int:album_id>/reviews")
 def reviews(album_id):
     user_id = current_user_id()
@@ -55,7 +51,6 @@ def reviews(album_id):
         .limit(50)
     )
     return {"reviews": [review.to_dict(user_id) for review in items]}
-
 
 @bp.put("/<int:album_id>/review")
 def save_review(album_id):
@@ -87,7 +82,6 @@ def save_review(album_id):
     db.session.commit()
     return review.to_dict(user_id)
 
-
 @bp.delete("/<int:album_id>/review")
 def delete_review(album_id):
     review = Review.query.filter_by(user_id=current_user_id(), album_id=album_id).first()
@@ -95,7 +89,6 @@ def delete_review(album_id):
         db.session.delete(review)
         db.session.commit()
     return {"deleted": True}
-
 
 def set_flag(model, album_id, active):
     """Add or remove a (user, album) row, used for likes and the shelf."""
@@ -108,24 +101,20 @@ def set_flag(model, album_id, active):
         model.query.filter_by(user_id=user_id, album_id=album_id).delete()
     db.session.commit()
 
-
 @bp.post("/<int:album_id>/like")
 def like(album_id):
     set_flag(AlbumLike, album_id, True)
     return {"liked": True}
-
 
 @bp.delete("/<int:album_id>/like")
 def unlike(album_id):
     set_flag(AlbumLike, album_id, False)
     return {"liked": False}
 
-
 @bp.post("/<int:album_id>/shelf")
 def add_to_shelf(album_id):
     set_flag(ShelfItem, album_id, True)
     return {"shelved": True}
-
 
 @bp.delete("/<int:album_id>/shelf")
 def remove_from_shelf(album_id):

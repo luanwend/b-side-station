@@ -7,10 +7,8 @@ from ..utils import current_user_id, require_login
 bp = Blueprint("reviews", __name__, url_prefix="/api")
 require_login(bp)
 
-
 def find_review(review_id):
     return db.session.get(Review, review_id)
-
 
 @bp.post("/reviews/<int:review_id>/like")
 def like(review_id):
@@ -23,7 +21,6 @@ def like(review_id):
         db.session.commit()
     return review.to_dict(user_id)
 
-
 @bp.delete("/reviews/<int:review_id>/like")
 def unlike(review_id):
     user_id = current_user_id()
@@ -34,12 +31,10 @@ def unlike(review_id):
     db.session.commit()
     return review.to_dict(user_id)
 
-
 @bp.get("/reviews/<int:review_id>/replies")
 def replies(review_id):
     items = Reply.query.filter_by(review_id=review_id).order_by(Reply.created_at)
     return {"replies": [reply.to_dict() for reply in items]}
-
 
 @bp.post("/reviews/<int:review_id>/replies")
 def add_reply(review_id):
@@ -56,7 +51,6 @@ def add_reply(review_id):
     db.session.add(reply)
     db.session.commit()
     return reply.to_dict(), 201
-
 
 @bp.delete("/replies/<int:reply_id>")
 def delete_reply(reply_id):

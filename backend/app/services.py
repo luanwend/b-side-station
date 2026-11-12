@@ -4,7 +4,6 @@ from .models import Album, AlbumLike, FavoriteAlbum, FavoriteArtist, FavoriteGen
 
 SECTION_SIZE = 12
 
-
 def get_or_create_album(album_id):
     """Return the local copy of a Deezer album, fetching and saving it the first time."""
     album = db.session.get(Album, album_id)
@@ -25,7 +24,6 @@ def get_or_create_album(album_id):
     )
     db.session.add(album)
     return album
-
 
 def build_recommendations(user_id):
     """Album rows for the home page, based on the user's favorite artists and genres."""

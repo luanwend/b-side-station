@@ -9,13 +9,9 @@ from ..utils import current_user_id
 
 bp = Blueprint("auth", __name__, url_prefix="/api/auth")
 
-USERNAME_RE = re.compile(r"^[A-Za-z0-9_]{3,30}$")
-
-
 def auth_response(user):
     token = create_access_token(identity=str(user.id))
     return {"token": token, "user": user.to_dict(private=True)}
-
 
 @bp.post("/register")
 def register():
@@ -24,7 +20,7 @@ def register():
     email = (data.get("email") or "").strip().lower()
     password = data.get("password") or ""
 
-    if not USERNAME_RE.match(username):
+    if not re.compile(r"^[A-Za-z0-9_]{3,30}$").match(username):
         return {"error": "Username must have 3-30 letters, numbers or underscores."}, 400
     if "@" not in email or len(email) > 120:
         return {"error": "Please enter a valid email."}, 400
@@ -39,7 +35,6 @@ def register():
     db.session.commit()
     return auth_response(user), 201
 
-
 @bp.post("/login")
 def login():
     data = request.get_json(silent=True) or {}
@@ -52,7 +47,6 @@ def login():
     if not user or not user.check_password(password):
         return {"error": "Invalid username or password."}, 401
     return auth_response(user)
-
 
 @bp.get("/me")
 @jwt_required()

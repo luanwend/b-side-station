@@ -1,11 +1,4 @@
-"""Small client for the public Deezer API (https://developers.deezer.com/api).
-
-No API key is needed. Deezer does not send CORS headers, so the browser
-cannot call it directly: the React app goes through these Flask routes.
-"""
-
 import time
-
 import requests
 
 BASE_URL = "https://api.deezer.com"
@@ -16,12 +9,10 @@ _session = requests.Session()
 _session.headers.update({"Accept-Language": "en"})  # English genre names
 _cache = {}
 
-
 class DeezerError(Exception):
     def __init__(self, message, not_found=False):
         super().__init__(message)
         self.not_found = not_found
-
 
 def _get(path, **params):
     key = (path, tuple(sorted(params.items())))
@@ -48,11 +39,9 @@ def _get(path, **params):
     _cache[key] = (time.time() + CACHE_TTL_SECONDS, data)
     return data
 
-
 def _image(url):
     # Items without an image come back with an empty hash, like ".../images/cover//500x500-...jpg".
     return url if url and "//" not in url.split("://", 1)[-1] else None
-
 
 def album_summary(raw, artist=None):
     artist = raw.get("artist") or artist or {}
@@ -65,7 +54,6 @@ def album_summary(raw, artist=None):
         "record_type": raw.get("record_type"),
     }
 
-
 def artist_summary(raw):
     return {
         "id": raw["id"],
@@ -74,16 +62,13 @@ def artist_summary(raw):
         "fans": raw.get("nb_fan"),
     }
 
-
 def search_albums(query, limit=24):
     data = _get("/search/album", q=query, limit=limit)
     return [album_summary(album) for album in data.get("data", [])]
 
-
 def search_artists(query, limit=12):
     data = _get("/search/artist", q=query, limit=limit)
     return [artist_summary(artist) for artist in data.get("data", [])]
-
 
 def get_album(album_id):
     raw = _get(f"/album/{album_id}")
@@ -96,7 +81,6 @@ def get_album(album_id):
         "nb_tracks": raw.get("nb_tracks"),
         "genres": [{"id": genre["id"], "name": genre["name"]} for genre in genres],
     }
-
 
 def get_album_tracks(album_id):
     # The album endpoint only embeds the first 25 tracks, so ask for them separately.
@@ -112,18 +96,15 @@ def get_album_tracks(album_id):
         for track in data.get("data", [])
     ]
 
-
 def get_artist(artist_id):
     raw = _get(f"/artist/{artist_id}")
     return {**artist_summary(raw), "nb_album": raw.get("nb_album")}
-
 
 def get_artist_albums(artist_id, artist):
     """Albums of an artist, most popular first. `artist` is {"id", "name"}."""
     data = _get(f"/artist/{artist_id}/albums", limit=100)
     albums = sorted(data.get("data", []), key=lambda album: album.get("fans", 0), reverse=True)
     return [album_summary(album, artist) for album in albums]
-
 
 def get_genres():
     data = _get("/genre")
@@ -132,7 +113,6 @@ def get_genres():
         for genre in data.get("data", [])
         if genre["id"] != 0  # 0 is "All"
     ]
-
 
 def get_chart_albums(genre_id=0, limit=25):
     data = _get(f"/chart/{genre_id}/albums", limit=limit)

@@ -1,6 +1,5 @@
 from flask_jwt_extended import get_jwt_identity, verify_jwt_in_request
 
-
 def require_login(blueprint):
     """Make every route of the blueprint require a valid JWT."""
 
@@ -8,13 +7,10 @@ def require_login(blueprint):
     def check_token():
         verify_jwt_in_request()
 
-
 def current_user_id():
     return int(get_jwt_identity())
 
-
 def parse_id_list(values, limit, label):
-    """Turn a list of ids into unique ints (keeping order). Raises ValueError."""
     if values is None:
         return []
     try:

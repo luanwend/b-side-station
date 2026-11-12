@@ -1,12 +1,10 @@
 from flask import Blueprint
-
 from ..models import FavoriteArtist, FavoriteGenre, Review
 from ..services import build_recommendations
 from ..utils import current_user_id, require_login
 
 bp = Blueprint("home", __name__, url_prefix="/api")
 require_login(bp)
-
 
 @bp.get("/home")
 def home():

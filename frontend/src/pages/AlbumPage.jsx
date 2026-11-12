@@ -1,114 +1,141 @@
-import { useCallback, useEffect, useState } from 'react'
-import { Link, useParams } from 'react-router-dom'
-import { api } from '../api.js'
-import ReviewCard from '../components/ReviewCard.jsx'
-import StarRating from '../components/StarRating.jsx'
-import { COVER_PLACEHOLDER, formatDuration, plural, yearOf } from '../utils.js'
+import { useCallback, useEffect, useState } from "react";
+import { Link, useParams } from "react-router-dom";
+import { api } from "../api.js";
+import ReviewCard from "../components/ReviewCard.jsx";
+import StarRating from "../components/StarRating.jsx";
+import { formatDuration, plural, yearOf } from "../utils.js";
 
 export default function AlbumPage() {
-  const { id } = useParams()
-  const [album, setAlbum] = useState(null)
-  const [reviews, setReviews] = useState([])
-  const [error, setError] = useState('')
-  const [rating, setRating] = useState(null)
-  const [body, setBody] = useState('')
-  const [saving, setSaving] = useState(false)
-  const [message, setMessage] = useState('')
+  const { id } = useParams();
+  const [album, setAlbum] = useState(null);
+  const [reviews, setReviews] = useState([]);
+  const [error, setError] = useState("");
+  const [rating, setRating] = useState(null);
+  const [body, setBody] = useState("");
+  const [saving, setSaving] = useState(false);
+  const [message, setMessage] = useState("");
 
   const load = useCallback(async () => {
     const [albumData, reviewData] = await Promise.all([
       api.get(`/albums/${id}`),
       api.get(`/albums/${id}/reviews`),
-    ])
-    setAlbum(albumData)
-    setReviews(reviewData.reviews)
-    return albumData
-  }, [id])
+    ]);
+    setAlbum(albumData);
+    setReviews(reviewData.reviews);
+    return albumData;
+  }, [id]);
 
   useEffect(() => {
-    setAlbum(null)
-    setError('')
-    setMessage('')
+    setAlbum(null);
+    setError("");
+    setMessage("");
     load()
       .then((albumData) => {
-        setRating(albumData.me.review?.rating ?? null)
-        setBody(albumData.me.review?.body ?? '')
+        setRating(albumData.me.review?.rating ?? null);
+        setBody(albumData.me.review?.body ?? "");
       })
-      .catch((err) => setError(err.message))
-  }, [load])
+      .catch((err) => setError(err.message));
+  }, [load]);
 
   async function saveReview(nextRating, nextBody) {
-    setSaving(true)
-    setMessage('')
+    setSaving(true);
+    setMessage("");
     try {
       if (nextRating == null && !nextBody.trim()) {
-        await api.del(`/albums/${id}/review`)
+        await api.del(`/albums/${id}/review`);
       } else {
-        await api.put(`/albums/${id}/review`, { rating: nextRating, body: nextBody })
+        await api.put(`/albums/${id}/review`, {
+          rating: nextRating,
+          body: nextBody,
+        });
       }
-      await load()
-      setMessage('Saved!')
+      await load();
+      setMessage("Saved!");
     } catch (err) {
-      setMessage(err.message)
+      setMessage(err.message);
     } finally {
-      setSaving(false)
+      setSaving(false);
     }
   }
 
   // Clicking a star saves right away, keeping the review text that is already saved.
   function handleRate(value) {
-    setRating(value)
-    saveReview(value, album.me.review?.body ?? '')
+    setRating(value);
+    saveReview(value, album.me.review?.body ?? "");
   }
 
   async function toggle(kind, active) {
     try {
-      if (active) await api.del(`/albums/${id}/${kind}`)
-      else await api.post(`/albums/${id}/${kind}`)
-      await load()
+      if (active) await api.del(`/albums/${id}/${kind}`);
+      else await api.post(`/albums/${id}/${kind}`);
+      await load();
     } catch (err) {
-      setMessage(err.message)
+      setMessage(err.message);
     }
   }
 
-  if (error) return <p className="error">{error}</p>
-  if (!album) return <p className="status">Loading...</p>
+  if (error) return <p className="error">{error}</p>;
+  if (!album) return <p className="status">Loading...</p>;
 
-  const { stats, me } = album
-  const average = stats.average_rating
-  const details = [yearOf(album.release_date), album.genres.map((genre) => genre.name).join(', '), album.label]
+  const { stats, me } = album;
+  const average = stats.average_rating;
+  const details = [
+    yearOf(album.release_date),
+    album.genres.map((genre) => genre.name).join(", "),
+    album.label,
+  ];
 
   return (
     <>
       <section className="album-hero">
-        <img className="album-cover" src={album.cover_xl || album.cover || COVER_PLACEHOLDER} alt={album.title} />
+        <img
+          className="album-cover"
+          src={
+            album.cover_xl ||
+            album.cover ||
+            "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%232c3440'/%3E%3Ccircle cx='50' cy='50' r='30' fill='%2314181c'/%3E%3Ccircle cx='50' cy='50' r='6' fill='%23678'/%3E%3C/svg%3E"
+          }
+          alt={album.title}
+        />
         <div className="album-info">
-          <p className="muted small">{details.filter(Boolean).join(' · ')}</p>
+          <p className="muted small">{details.filter(Boolean).join(" · ")}</p>
           <h1>{album.title}</h1>
           <p className="album-artist">
-            by <Link to={`/artists/${album.artist.id}`}>{album.artist.name}</Link>
+            by{" "}
+            <Link to={`/artists/${album.artist.id}`}>{album.artist.name}</Link>
           </p>
 
           <div className="album-stats">
             <div className="album-average">
-              <StarRating value={average ? Math.round(average * 2) / 2 : 0} size="sm" />
-              <strong>{average ? average.toFixed(1) : '–'}</strong>
-              <span className="muted">({plural(stats.rating_count, 'rating')})</span>
+              <StarRating
+                value={average ? Math.round(average * 2) / 2 : 0}
+                size="sm"
+              />
+              <strong>{average ? average.toFixed(1) : "–"}</strong>
+              <span className="muted">
+                ({plural(stats.rating_count, "rating")})
+              </span>
             </div>
-            <span className="muted">♥ {plural(stats.like_count, 'like')}</span>
-            <span className="muted">{plural(stats.review_count, 'review')}</span>
+            <span className="muted">♥ {plural(stats.like_count, "like")}</span>
+            <span className="muted">
+              {plural(stats.review_count, "review")}
+            </span>
           </div>
 
           <div className="album-actions">
-            <button type="button" className={`btn${me.liked ? ' btn-liked' : ''}`} onClick={() => toggle('like', me.liked)}>
-              {me.liked ? '♥ Liked' : '♡ Like'}
+            <button
+              type="button"
+              className={`btn${me.liked ? " btn-liked" : ""}`}
+              onClick={() => toggle("like", me.liked)}
+            >
+              {me.liked ? "♥ Liked" : "♡ Like"}
             </button>
             <button
               type="button"
-              className={`btn${me.shelved ? ' btn-active' : ''}`}
-              onClick={() => toggle('shelf', me.shelved)}
+              className={`btn${me.shelved ? " btn-active" : ""}`}
+              onClick={() => toggle("shelf", me.shelved)}
             >
-              {me.shelved ? '✓ On your shelf' : '+ Add to shelf'}
+              {me.shelved ? "✓ On your shelf" : "+ Add to shelf"}
             </button>
           </div>
 
@@ -117,7 +144,11 @@ export default function AlbumPage() {
               <h3>Your rating</h3>
               <StarRating value={rating} onChange={handleRate} size="lg" />
               {rating != null && (
-                <button type="button" className="link-button small" onClick={() => handleRate(null)}>
+                <button
+                  type="button"
+                  className="link-button small"
+                  onClick={() => handleRate(null)}
+                >
                   Clear
                 </button>
               )}
@@ -136,7 +167,11 @@ export default function AlbumPage() {
                 disabled={saving}
                 onClick={() => saveReview(rating, body)}
               >
-                {saving ? 'Saving...' : me.review?.body ? 'Update review' : 'Save review'}
+                {saving
+                  ? "Saving..."
+                  : me.review?.body
+                    ? "Update review"
+                    : "Save review"}
               </button>
               {message && <span className="muted small">{message}</span>}
             </div>
@@ -148,7 +183,12 @@ export default function AlbumPage() {
         <section>
           <h2 className="section-title">Reviews</h2>
           {reviews.length ? (
-            reviews.map((review) => <ReviewCard key={`${review.id}-${review.updated_at}`} review={review} />)
+            reviews.map((review) => (
+              <ReviewCard
+                key={`${review.id}-${review.updated_at}`}
+                review={review}
+              />
+            ))
           ) : (
             <p className="muted">No reviews yet. Be the first!</p>
           )}
@@ -167,5 +207,5 @@ export default function AlbumPage() {
         </aside>
       </div>
     </>
-  )
+  );
 }

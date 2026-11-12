@@ -24,7 +24,6 @@ export default function Navbar() {
             Home
           </NavLink>
           <NavLink to={`/users/${user.username}`}>Profile</NavLink>
-          <NavLink to="/settings">Settings</NavLink>
         </nav>
         <form className="nav-search" onSubmit={handleSearch}>
           <input

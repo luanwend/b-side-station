@@ -1,21 +1,21 @@
-import { useEffect, useState } from 'react'
-import { Link } from 'react-router-dom'
-import { api } from '../api.js'
-import AlbumGrid from '../components/AlbumGrid.jsx'
-import ReviewCard from '../components/ReviewCard.jsx'
-import { useAuth } from '../context/AuthContext.jsx'
+import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import { api } from "../api.js";
+import AlbumGrid from "../components/AlbumGrid.jsx";
+import ReviewCard from "../components/ReviewCard.jsx";
+import { useAuth } from "../context/AuthContext.jsx";
 
 export default function Home() {
-  const { user } = useAuth()
-  const [data, setData] = useState(null)
-  const [error, setError] = useState('')
+  const { user } = useAuth();
+  const [data, setData] = useState(null);
+  const [error, setError] = useState("");
 
   useEffect(() => {
     api
-      .get('/home')
+      .get("/home")
       .then(setData)
-      .catch((err) => setError(err.message))
-  }, [])
+      .catch((err) => setError(err.message));
+  }, []);
 
   return (
     <>
@@ -29,8 +29,8 @@ export default function Home() {
 
       {data && !data.personalized && (
         <p className="notice">
-          Pick your favorite artists and genres in <Link to="/settings">Settings</Link> to get personal
-          recommendations.
+          Pick your favorite artists and genres in{" "}
+          <Link to="/settings">Settings</Link> to get personal recommendations.
         </p>
       )}
 
@@ -45,12 +45,16 @@ export default function Home() {
         <section className="section">
           <h2 className="section-title">Recent reviews</h2>
           {data.recent_reviews.length ? (
-            data.recent_reviews.map((review) => <ReviewCard key={review.id} review={review} showAlbum />)
+            data.recent_reviews.map((review) => (
+              <ReviewCard key={review.id} review={review} showAlbum />
+            ))
           ) : (
-            <p className="muted">No reviews yet. Find an album and write the first one!</p>
+            <p className="muted">
+              No reviews yet. Find an album and write the first one!
+            </p>
           )}
         </section>
       )}
     </>
-  )
+  );
 }

@@ -9,10 +9,8 @@ def utcnow():
     # Stored as naive UTC because MySQL DATETIME has no time zone.
     return datetime.now(timezone.utc).replace(tzinfo=None)
 
-
 def iso(value):
     return value.isoformat() + "Z" if value else None
-
 
 class User(db.Model):
     __tablename__ = "users"
@@ -41,10 +39,7 @@ class User(db.Model):
             data["email"] = self.email
         return data
 
-
 class Album(db.Model):
-    """Local copy of the Deezer albums that users interacted with."""
-
     __tablename__ = "albums"
 
     id = db.Column(db.BigInteger, primary_key=True, autoincrement=False)  # Deezer album id
@@ -57,7 +52,6 @@ class Album(db.Model):
     release_date = db.Column(db.String(10))
 
     def to_dict(self):
-        # Same shape as deezer.album_summary(), so the frontend can treat both alike.
         return {
             "id": self.id,
             "title": self.title,
@@ -66,10 +60,7 @@ class Album(db.Model):
             "release_date": self.release_date,
         }
 
-
 class Review(db.Model):
-    """One entry per user and album: a star rating, a written review, or both."""
-
     __tablename__ = "reviews"
     __table_args__ = (db.UniqueConstraint("user_id", "album_id", name="uq_review_user_album"),)
 
@@ -102,14 +93,12 @@ class Review(db.Model):
             data["album"] = self.album.to_dict()
         return data
 
-
 class ReviewLike(db.Model):
     __tablename__ = "review_likes"
 
     user_id = db.Column(db.Integer, db.ForeignKey("users.id"), primary_key=True)
     review_id = db.Column(db.Integer, db.ForeignKey("reviews.id"), primary_key=True)
     created_at = db.Column(db.DateTime, nullable=False, default=utcnow)
-
 
 class Reply(db.Model):
     __tablename__ = "replies"
@@ -131,7 +120,6 @@ class Reply(db.Model):
             "user": {"id": self.user.id, "username": self.user.username},
         }
 
-
 class AlbumLike(db.Model):
     __tablename__ = "album_likes"
 
@@ -141,10 +129,7 @@ class AlbumLike(db.Model):
 
     album = db.relationship("Album")
 
-
 class ShelfItem(db.Model):
-    """The user's "listen later" list."""
-
     __tablename__ = "shelf_items"
 
     user_id = db.Column(db.Integer, db.ForeignKey("users.id"), primary_key=True)
@@ -152,7 +137,6 @@ class ShelfItem(db.Model):
     created_at = db.Column(db.DateTime, nullable=False, default=utcnow)
 
     album = db.relationship("Album")
-
 
 class FavoriteAlbum(db.Model):
     __tablename__ = "favorite_albums"
@@ -162,7 +146,6 @@ class FavoriteAlbum(db.Model):
     position = db.Column(db.Integer, nullable=False)
 
     album = db.relationship("Album")
-
 
 class FavoriteArtist(db.Model):
     __tablename__ = "favorite_artists"
@@ -175,7 +158,6 @@ class FavoriteArtist(db.Model):
 
     def to_dict(self):
         return {"id": self.artist_id, "name": self.name, "picture": self.picture_url}
-
 
 class FavoriteGenre(db.Model):
     __tablename__ = "favorite_genres"
