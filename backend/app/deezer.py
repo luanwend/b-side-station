@@ -6,7 +6,7 @@ CACHE_TTL_SECONDS = 15 * 60
 MAX_CACHE_ENTRIES = 1000
 
 _session = requests.Session()
-_session.headers.update({"Accept-Language": "en"})  # English genre names
+_session.headers.update({"Accept-Language": "en"})
 _cache = {}
 
 class DeezerError(Exception):
@@ -27,7 +27,6 @@ def _get(path, **params):
     except (requests.RequestException, ValueError) as exc:
         raise DeezerError("Could not reach the Deezer API.") from exc
 
-    # Deezer reports errors with HTTP 200 and an "error" object.
     if isinstance(data, dict) and "error" in data:
         error = data["error"]
         not_found = error.get("code") == 800
@@ -40,7 +39,6 @@ def _get(path, **params):
     return data
 
 def _image(url):
-    # Items without an image come back with an empty hash, like ".../images/cover//500x500-...jpg".
     return url if url and "//" not in url.split("://", 1)[-1] else None
 
 def album_summary(raw, artist=None):
@@ -83,7 +81,6 @@ def get_album(album_id):
     }
 
 def get_album_tracks(album_id):
-    # The album endpoint only embeds the first 25 tracks, so ask for them separately.
     data = _get(f"/album/{album_id}/tracks", limit=100)
     return [
         {
