@@ -41,20 +41,6 @@ export default function Home() {
         </section>
       ))}
 
-      {data && (
-        <section className="section">
-          <h2 className="section-title">Recent reviews</h2>
-          {data.recent_reviews.length ? (
-            data.recent_reviews.map((review) => (
-              <ReviewCard key={review.id} review={review} showAlbum />
-            ))
-          ) : (
-            <p className="muted">
-              No reviews yet. Find an album and write the first one!
-            </p>
-          )}
-        </section>
-      )}
     </>
   );
 }
