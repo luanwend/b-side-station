@@ -1,6 +1,6 @@
 # B-Side Station
 
-#### Video Demo: TODO - add your video URL
+#### Video Demo: https://youtu.be/fZxbhnZu-h8
 
 #### Description:
 
