@@ -27,7 +27,13 @@ export default function ArtistPage() {
   return (
     <>
       <section className="artist-header">
-        <img src={artist.picture || ARTIST_PLACEHOLDER} alt={artist.name} />
+        <img
+          src={
+            artist.picture ||
+            "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%232c3440'/%3E%3Ccircle cx='50' cy='38' r='18' fill='%23678'/%3E%3Cellipse cx='50' cy='90' rx='32' ry='26' fill='%23678'/%3E%3C/svg%3E"
+          }
+          alt={artist.name}
+        />
         <div>
           <p className="muted small">ARTIST</p>
           <h1>{artist.name}</h1>
